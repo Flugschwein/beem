@@ -156,6 +156,15 @@ before transmitting the packed file. Please check the hash-sum after downloading
 
 Changelog
 =========
+0.19.53
+-------
+* Add userdata and featureflags to beempy
+* steemd.pevo.science and steemd.steemgigs.org removed from Nodelist
+* bug fixed in allow and disallow for CLI
+* Issue #52 closed thanks to crokkon
+* Issue #64 fixed
+* Issue #66 fixed thanks to flugschwein
+
 0.19.52
 -------
 * appbase.buildtime.io node added
