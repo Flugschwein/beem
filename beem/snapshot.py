@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 class AccountSnapshot(list):
     """ This class allows to easily access Account history
 
-        :param str account_name: Name of the account
+        :param str account: Name of the account
         :param Steem steem_instance: Steem
                instance
     """
@@ -434,9 +434,14 @@ class AccountSnapshot(list):
 
         elif op['type'] == 'hardfork_hive':
             vests = Amount(op['vests_converted'])
-            hbd = Amount(op['steem_transferred'])
-            hive = Amount(op['sbd_transferred'])
+            hive = Amount(op['steem_transferred'])
+            hbd = Amount(op['sbd_transferred'])
             self.update(ts, vests * (-1), 0, 0, hive * (-1), hbd * (-1))
+
+        elif op['type'] == 'hardfork_hive_restore':
+            hive = Amount(op['steem_transferred'])
+            hbd = Amount(op['sbd_transferred'])
+            self.update(ts, 0, 0, 0, hive, hbd)
 
         elif op['type'] in ['comment', 'feed_publish', 'shutdown_witness',
                             'account_witness_vote', 'witness_update', 'custom_json',
