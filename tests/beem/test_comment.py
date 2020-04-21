@@ -21,8 +21,8 @@ class Testcases(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         nodelist = NodeList()
-        nodelist.update_nodes(steem_instance=Steem(node=nodelist.get_nodes(hive=True), num_retries=10))
-        node_list = nodelist.get_nodes(hive=True)
+        nodelist.update_nodes(steem_instance=Steem(node=nodelist.get_hive_nodes(), num_retries=10))
+        node_list = nodelist.get_hive_nodes()
 
         cls.bts = Steem(
             node=node_list,
@@ -34,7 +34,7 @@ class Testcases(unittest.TestCase):
         )
 
         acc = Account("fullnodeupdate", steem_instance=cls.bts)
-        comment = Comment(acc.get_blog_entries(limit=5)[-1], steem_instance=cls.bts)
+        comment = Comment(acc.get_blog_entries(limit=5)[0], steem_instance=cls.bts)
         cls.authorperm = comment.authorperm
         [author, permlink] = resolve_authorperm(cls.authorperm)
         cls.author = author
@@ -59,7 +59,7 @@ class Testcases(unittest.TestCase):
             title = c.title
             cnt += 1
             if title == '':
-                c.steem.rpc.next()
+                c.blockchain.rpc.next()
                 c.refresh()
                 title = c.title
         self.assertTrue(isinstance(c.id, int))
@@ -96,7 +96,7 @@ class Testcases(unittest.TestCase):
             title = c.title
             cnt += 1
             if title == '':
-                c.steem.rpc.next()
+                c.blockchain.rpc.next()
                 c.refresh()
                 title = c.title
 
@@ -121,20 +121,20 @@ class Testcases(unittest.TestCase):
         self.assertIn(
             "test",
             op["voter"])
-        c.steem.txbuffer.clear()
+        c.blockchain.txbuffer.clear()
         tx = c.upvote(weight=150, voter="test")
         op = tx["operations"][0][1]
         self.assertEqual(op["weight"], 10000)
-        c.steem.txbuffer.clear()
+        c.blockchain.txbuffer.clear()
         tx = c.upvote(weight=99.9, voter="test")
         op = tx["operations"][0][1]
         self.assertEqual(op["weight"], 9990)
         
-        c.steem.txbuffer.clear()
+        c.blockchain.txbuffer.clear()
         tx = c.downvote(weight=150, voter="test")
         op = tx["operations"][0][1]
         self.assertEqual(op["weight"], -10000)
-        c.steem.txbuffer.clear()
+        c.blockchain.txbuffer.clear()
         tx = c.downvote(weight=99.9, voter="test")
         op = tx["operations"][0][1]
         self.assertEqual(op["weight"], -9990)
